@@ -5,13 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "startdb" : "C:/Users/Pichau/Desktop/progrmacao/desenvolvimentoWeb/projeto_parte1/projeto_parte2/db/bin/mongod.exe --dbpath C:/Users/Pichau/Desktop/progrmacao/desenvolvimentoWeb/projeto_parte1/projeto_parte2/db/data/db",
-    "start" : "node app.js"
+    "startdb": "./db/bin/mongod.exe --dbpath C:/Users/Pichau/Desktop/progrmacao/desenvolvimentoWeb/projeto_parte1/projeto_parte2/db/data/db",
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.19.2",
     "mongodb": "^6.5.0",
     "mongoose": "^8.3.0",

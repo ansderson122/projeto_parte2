@@ -1,23 +1,18 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const path = require('path');
 
 const app = express();
-const port = 3000;
-const Anime = require("./model/animeSchema")
+const port = 3001;
+const { obterAnimes,cadastrarAnime,cadastrarUsuarios,autenticarUsuario } = require('./data');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 
+
+app.use(bodyParser.json());
+app.use(cors()); 
 app.use(express.static(path.join(__dirname, '/Capas')));
 
-// Conectar ao MongoDB
-mongoose.connect('mongodb://localhost:27017/meuBancoDeDados', { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-        console.log('Conectado com sucesso ao MongoDB');
-    })
-    .catch(error => {
-        console.error('Erro ao conectar ao MongoDB:', error);
-    });
 
-    
 // Rota para acessar as imagens
 app.get('/Capas/:nomeArquivo', (req, res) => {
     const nomeArquivo = req.params.nomeArquivo;
@@ -27,29 +22,56 @@ app.get('/Capas/:nomeArquivo', (req, res) => {
 
 // Rota para adicionar um novo anime
 app.post('/animes', async (req, res) => {
-        const novoAnime = new Anime({
-            "nome": req.body.nome,
-            "ano_lancamento":  req.body.ano_lancamento,
-            "descricao":req.body.descricao ,
-            "img":req.body.img,
-            "Legendado-episodios":req.body.Legendado_episodios,
-            "Dublado-episodios":req.body.Dublado_episodios
-        });
-        await novoAnime.save()
-        .then(data=>{
-            res.json(data);
-        })
-        .catch(err =>{
-            res.json({message: err});
-            console.log(err)
-        });
+    try {
+        const anime = await cadastrarAnime(req.body);
+        res.json(anime);
+    } catch (error) {
+        console.error('Erro ao cadastrar o anime:', error);
+        res.status(500).send('Erro interno do servidor');
+    }
 });
 
 // Rota para pegar todos os animes 
 app.get('/animes', async (req, res) => {
-    const animes = await Anime.find();
-    res.json(animes);
+    try {
+        const animes = await obterAnimes();
+        console.log(animes)
+        res.json(animes);
+    } catch (error) {
+        console.error('Erro ao obter os animes:', error);
+        res.status(500).send('Erro interno do servidor');
+    }
 });
+
+// Rota para cadastra usuários 
+app.post('/usuarios', async (req,res) =>{
+    try {
+        const usuario = await cadastrarUsuarios(req.body);
+        res.json(usuario);
+    } catch (error) {
+        console.error('Erro ao cadastrar o usuarios:', error);
+        res.status(500).send('Erro interno do servidor');
+    }
+})
+
+// Rota para autenticar usuários
+app.post('/login', async (req, res) => {
+    const { email, senha } = req.body;
+  
+    try {
+      const usuario = await autenticarUsuario(email, senha);
+      console.log(usuario)  
+      if (!usuario) {
+        return res.status(401).json({ message: 'Email ou senha incorretos' });
+      }
+  
+      res.status(200).json({ message: 'Login bem-sucedido' });
+    } catch (error) {
+      console.error('Erro ao autenticar usuário:', error);
+      res.status(500).json({ message: 'Erro ao autenticar usuário' });
+    }
+  });
+  
 
 app.listen(port, () => {
     console.log(`Servidor Express em execução em http://localhost:${port}`);
