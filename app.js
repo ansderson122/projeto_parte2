@@ -35,8 +35,10 @@ app.post('/animes', async (req, res) => {
 app.get('/animes', async (req, res) => {
     try {
         const animes = await obterAnimes();
-        console.log(animes)
-        res.json(animes);
+        const destaques = [ 16, 5, 11, 4, 15, 2, 13, 7, 9 ]
+        const assistidos = [ 13, 5, 4, 2, 7, 10, 12, 14, 9 ]
+        const assistatambem = [13,18,12,6,19,1,17,3,16,7,8,11,10,15,14,4,9,20,5,2]
+        res.json([animes,destaques,assistidos,assistatambem]);
     } catch (error) {
         console.error('Erro ao obter os animes:', error);
         res.status(500).send('Erro interno do servidor');
