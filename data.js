@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Anime = require('./model/animeSchema');
 const Usuarios = require('./model/usuariosSchema')
 
-const dbURI = 'mongodb+srv://usuario:alh84001@cluster0.i9u9cjb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const dbURI = 'mongodb+srv://{usuário}:{senha}@cluster0.i9u9cjb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Conectado com sucesso ao MongoDB'))
   .catch(err => console.log(err));
